@@ -27,7 +27,7 @@
         <meta property="og:type" content="article">
         <meta property="og:title" content="CI/CD Basics"> 
         <meta property="og:description" content="The basics of CI/CD pipelines, github actions and github pages">
-        <meta property="og:updated_time" content="2022-06-26 07:28:58.808964">
+        <meta property="og:updated_time" content="2022-06-26 22:53:03.396716">
         <meta property="og:image" content="static/images/share-webslides.jpg">
 
         <!-- TWITTER -->
@@ -92,6 +92,26 @@
 			<section class='bg-gray slide-center'>
 				<div class='wrap fadeIn'>
 					<div class='content-center'>
+					<h2>Pipeline/Workflow vs jobs/steps</h2>
+					<p> A pipeline/workflow is the full definition of the task (can mean the file or the actions). Jobs/steps are the individual actions or group of actions that make up a pipeline/workflow</p>
+
+					</div>
+				</div>
+			</section>
+
+			<section class='bg-gray slide-center'>
+				<div class='wrap fadeIn'>
+					<div class='content-center'>
+					<h2>Environment</h2>
+					<p>The environment the pipeline/workflow runs in including the operating system, any configuration variables, and any included binaries/languages</p>
+
+					</div>
+				</div>
+			</section>
+
+			<section class='bg-gray slide-center'>
+				<div class='wrap fadeIn'>
+					<div class='content-center'>
 					<h2>Strategy for making a pipeline</h2>
 					<p>Imagine you have someone you are training to do the task. They have a brand new laptop and you need to help them get setup and do the task</p>
 
@@ -112,8 +132,172 @@
 			<section class='bg-gray slide-center'>
 				<div class='wrap fadeIn'>
 					<div class='content-center'>
-					<h2>An example</h2>
+					<h2>Overview of steps for the example</h2>
 					<p>First we need to clone the site so we have the files, next we need to install hugo, then we need to build them (hugo -d), and finally we need to take the files and put them somewhere other people can access them</p>
+
+					</div>
+				</div>
+			</section>
+
+			<section class='bg-gray slide-center'>
+				<div class='wrap fadeIn'>
+					<div class='content-center'>
+					<h2>Step 1: Clone the site so we have the files</h2>
+					<p>First we need to clone the site down, this means we will need some sort of OS and git along with a URL to clone the files down. So once we have an os we need to run:</p>
+					<pre><code class='language-bash'>git clone https://github.com/Schulich-Ignite/website</code></pre>
+
+					</div>
+				</div>
+			</section>
+
+			<section class='bg-gray slide-center'>
+				<div class='wrap fadeIn'>
+					<div class='content-center'>
+					<h2>Step 2: We need to install hugo</h2>
+					<p>This means either installing go and installing hugo that way, or downloading a binary</p>
+
+					</div>
+				</div>
+			</section>
+
+			<section class='bg-gray slide-center'>
+				<div class='wrap fadeIn'>
+					<div class='content-center'>
+					<h2>Step 3: Build the files</h2>
+					<p>Need to run the hugo command over the files we downloaded</p>
+					<pre><code class='language-bash'>hugo -d</code></pre>
+
+					</div>
+				</div>
+			</section>
+
+			<section class='bg-gray slide-center'>
+				<div class='wrap fadeIn'>
+					<div class='content-center'>
+					<h2>Step 4: Deploy the files</h2>
+					<p>Find a way to deploy those files so other people can access them (will cover this in detail tomorrow)</p>
+
+					</div>
+				</div>
+			</section>
+
+			<section class='bg-gray slide-center'>
+				<div class='wrap fadeIn'>
+					<div class='content-center'>
+					<h2>Some example systems</h2>
+
+					</div>
+				</div>
+			</section>
+
+			<section class='bg-gray slide-center'>
+				<div class='wrap fadeIn'>
+					<div class='content-center'>
+					<h2>Jenkins</h2>
+					<p>Example jenkinsfile (printing Hello world! at cli)</p>
+					<pre><code class='language-jenkins'>pipeline {
+    agent any 
+    stages {
+        stage('Stage 1') {
+            steps {
+                echo 'Hello world!' 
+            }
+        }
+    }
+}</code></pre>
+
+					<a href=https://www.jenkins.io/ target='_blank' rel='external' style='color:#ff0000;'>Site</a>
+
+					</div>
+				</div>
+			</section>
+
+			<section class='bg-gray slide-center'>
+				<div class='wrap fadeIn'>
+					<div class='content-center'>
+					<h2>Ansible</h2>
+					<pre><code class='language-ansible'>---
+- name: This is a hello-world example
+  hosts: ansibleclient01.local
+  tasks:
+    - name: Create a file called '/tmp/testfile.txt' with the content 'hello world'.
+      copy:
+        content: hello worldn
+        dest: /tmp/testfile.txt</code></pre>
+
+					<a href=https://www.ansible.com/ target='_blank' rel='external' style='color:#ff0000;'>Site</a>
+
+					</div>
+				</div>
+			</section>
+
+			<section class='bg-gray slide-center'>
+				<div class='wrap fadeIn'>
+					<div class='content-center'>
+					<h2>Gitlab CI/CD</h2>
+					<pre><code class='language-gitlab'>build-job:
+  stage: build
+  script:
+    - echo "Hello World!"
+</code></pre>
+
+					<a href=https://docs.gitlab.com/ee/ci/ target='_blank' rel='external' style='color:#ffff00;'>Site</a>
+
+					</div>
+				</div>
+			</section>
+
+			<section class='bg-gray slide-center'>
+				<div class='wrap fadeIn'>
+					<div class='content-center'>
+					<h2>Travis CI</h2>
+
+					<a href=https://www.travis-ci.com/ target='_blank' rel='external' style='color:#0000ff;'>Site</a>
+
+					</div>
+				</div>
+			</section>
+
+			<section class='bg-gray slide-center'>
+				<div class='wrap fadeIn'>
+					<div class='content-center'>
+					<h2>Azure</h2>
+
+					<a href=https://azure.microsoft.com/en-us/services/devops/pipelines/ target='_blank' rel='external' style='color:#0000ff;'>Site</a>
+
+					</div>
+				</div>
+			</section>
+
+			<section class='bg-gray slide-center'>
+				<div class='wrap fadeIn'>
+					<div class='content-center'>
+					<h2>CI/CD is not always remote</h2>
+					<p>Some CI/CD processes are run locally on people's devices like local testing pipelines (some people say this isn't ci/cd some say it is)</p>
+
+					</div>
+				</div>
+			</section>
+
+			<section class='bg-gray slide-center'>
+				<div class='wrap fadeIn'>
+					<div class='content-center'>
+					<h2>CI/CD vs PaaS (platforms as a service)</h2>
+					<p>PaaS services like heroku are designed to be a one-stop shop for setting up a project, they tend to be more efficient but they are by design less flexible than standard CI/CD systems</p>
+
+					<a href=https://www.heroku.com/ target='_blank' rel='external' style='color:#79589F;'>Heroku</a>
+
+					</div>
+				</div>
+			</section>
+
+			<section class='bg-gray slide-center'>
+				<div class='wrap fadeIn'>
+					<div class='content-center'>
+					<h2>CI/CD vs containers</h2>
+					<p>Containers are essentially a way to run code inside a 'mini computer' inside a computer. Some CI/CD systems use containers, but containers are not themselves CI/CD systems necessarily</p>
+
+					<a href=https://www.docker.com/ target='_blank' rel='external' style='color:#2496ed;'>Docker</a>
 
 					</div>
 				</div>
@@ -123,6 +307,71 @@
 				<div class='wrap fadeIn'>
 					<div class='content-center'>
 					<h2>Github Actions</h2>
+					<p>Github actions is a remote CI/CD system that is integrated with github directly</p>
+
+					</div>
+				</div>
+			</section>
+
+			<section class='bg-black slide-center'>
+				<div class='wrap fadeIn'>
+					<div class='content-center'>
+					<h2>Github Actions Files are YML/YAML</h2>
+					<p>Github actions files are written in YAML/YML</p>
+
+					<a href=https://docs.ansible.com/ansible/latest/reference_appendices/YAMLSyntax.html#yaml-basics target='_blank' rel='external' style='color:#4dd;'>YAML Syntax</a>
+
+					</div>
+				</div>
+			</section>
+
+			<section class='bg-black slide-center'>
+				<div class='wrap fadeIn'>
+					<div class='content-center'>
+					<h2>For example this presentation has a pipeline</h2>
+					<pre><code class='language-yaml'>name: GH build for ezprez
+
+on:
+  push:
+    branches:
+      - master
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout repo
+      uses: actions/checkout@v2
+    - name: Setup Python
+      uses: actions/setup-python@v2
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        python -m pip install --upgrade setuptools wheel
+        python -m pip install ezprez
+    - name: build html files
+      run: |
+        mkdir ~/Downloads
+        python example.py
+        mv Presentation/* .
+        rm -rf Presentation
+    - name: Deploy Docs
+      uses: peaceiris/actions-gh-pages@v3
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: .
+</code></pre>
+
+					</div>
+				</div>
+			</section>
+
+			<section class='bg-black slide-center'>
+				<div class='wrap fadeIn'>
+					<div class='content-center'>
+					<h2>Github Actions File structure</h2>
+					<p>They go in a folder in your repository called /.github/workflows (you can have multiple pipelines)</p>
 
 					</div>
 				</div>
@@ -132,6 +381,7 @@
 				<div class='wrap fadeIn'>
 					<div class='content-center'>
 					<h2>Triggers</h2>
+					<p>This configuration determines when an action pipeline runs. Note that multiple pipelines can be run off a single trigger, and pipelines finishing can trigger other pipelines to start</p>
 
 					</div>
 				</div>
