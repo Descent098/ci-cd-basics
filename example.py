@@ -103,24 +103,90 @@ Slide("For example this presentation has a pipeline", Code("yaml", presentation_
 Slide("Github Actions File structure", "They go in a folder in your repository called /.github/workflows (you can have multiple pipelines)", background="black")
 
 ## Triggers
-Slide("Triggers", "This configuration determines when an action pipeline runs. Note that multiple pipelines can be run off a single trigger, and pipelines finishing can trigger other pipelines to start", background="black") # On-dispatch, on-push, cron, on-event (release etc.) etc. include examples like ignite site or sws or ezcv themes
+
+
+trigger_workflow = """name: GH build for ezprez
+
+on:
+  ... # This is where you add your trigger
+"""
+
+Slide("Triggers", "This configuration determines when an action pipeline runs. Note that multiple pipelines can be run off a single trigger, and pipelines finishing can trigger other pipelines to start. After a name parameter you need to add an 'on'", Code("yaml", trigger_workflow), background="black") # On-dispatch, on-push, cron, on-event (release etc.) etc. include examples like ignite site or sws or ezcv themes
+
+Slide("On push",background="black") # TODO: https://github.com/Descent098/sdu/blob/master/.github/workflows/test-suite.yml#L3 and https://github.com/Descent098/ahd/blob/master/.github/workflows/testing.yml#L3-L6
+Slide("On Workflow dispatch",background="black") # TODO: https://github.com/Descent098/ezcv/blob/master/.github/workflows/docs.yml#L3-L9
+Slide("On Schedule/Cron",background="black") # TODO: https://github.com/Descent098/ahd/blob/master/.github/workflows/testing.yml#L7-L9
 
 ## Jobs
-Slide("Jobs", "Each job is essentially a set of steps with some associated state",background="black") # On-dispatch, on-push, cron etc.
+jobs_template = """name: name of workflow
 
-### Job Steps
-Slide("Steps","This is where actual commands are run. Note that state is typically persistant across steps in the same job.", background="black") # Each bullet point is a task that runs steps defined, or runs action defined
+on:
+  ... # This is where you add your trigger
 
+jobs:
+  job_name:
+    name: You can also specify a name here
+    ... # environment definition
+"""
 
-Slide("Using pre-built actions", background="black")
+Slide("Jobs", "Each job is essentially a set of steps with some associated state. Each job runs in it's own 'runner' with it's own 'virtual environment'(container)", Code("yaml", jobs_template),background="black") # On-dispatch, on-push, cron etc.
 
 ### Environment definitions
 Slide("Environment definitions", "The information used to configure all steps in a job", background="black") 
-Slide("Strategy", "matrix",background="black")  # TODO: Strategy with matrix of options to run on https://github.com/Descent098/sws/blob/master/.github/workflows/test-suite.yml#L11-L13
-Slide("Using with", "with can be used to define settings for each step in a job. There are some standard one's we will cover but keep in mind custom actions often have custom settings you can use alongside the with section",background="black") 
+runs_on_template = """name: name of workflow
+
+on:
+  ... # This is where you add your trigger
+
+jobs:
+  job_name:
+    name: You can also specify a name here
+    runs-on: ubuntu-latest # can also be a matrix you iterate over
+"""
+Slide("runs-on", "This defines what OS the workflow runs on", Code("yaml", runs_on_template),background="black") 
+strategy_template = r"""name: name of workflow
+
+on:
+  ... # This is where you add your trigger
+
+jobs:
+  job_name:
+    name: You can also specify a name here
+    runs-on: ${{ matrix.os }} # Would run this with ubuntu-latest first, then windows-latest, then macos-latest
+    strategy:
+      matrix:
+        python_version: ['3.7', '3.8', '3.9', '3.10'] # Can use this later on
+        os: [ubuntu-latest, windows-latest, macOS-latest]
+"""
+Slide("Strategy", "Used to create arrays that are itterated over to run a job multiple times",Code("yaml", strategy_template),background="black")  # TODO: Strategy with matrix of options to run on https://github.com/Descent098/sws/blob/master/.github/workflows/test-suite.yml#L11-L13
+
+### Job Steps
+steps_template = r"""name: name of workflow
+
+on:
+  ... # This is where you add your trigger
+
+jobs:
+  job_name:
+    ... # your job config
+
+    steps:
+    - uses: actions/checkout@v2 # minimal example
+    - name: Set up Python ${{ matrix.python_version }} # Using a more complex pre-built example
+      uses: actions/setup-python@v1 # https://github.com/actions/setup-python
+      with:
+        python-version: ${{ matrix.python_version }}
+    - name: Install dependencies # Example of running raw bash commands
+      run: |
+        pip install .
+        pip install pytest
+"""
+Slide("Steps","This is where actual commands are run. Note that state is typically persistant across steps in the same job. Note you can use other people's actions by passing the repo name", Code("yaml", steps_template),background="black") # Each bullet point is a task that runs steps defined, or runs action defined
+
+
+Slide("Using with", "With can be used to define settings for each step in a job. There are some standard one's we will cover but keep in mind custom actions often have custom settings you can use alongside the with section",background="black") 
 Slide("With options: token", "Tokens are used to authenticate an action and are what allows the action access to make changes or even just access content that is locked behind a password",background="black")  
 Slide("With options: artifacts", background="black")  
-
 
 
 # Github Pages
