@@ -27,7 +27,7 @@
         <meta property="og:type" content="article">
         <meta property="og:title" content="CI/CD Basics"> 
         <meta property="og:description" content="The basics of CI/CD pipelines, github actions and github pages">
-        <meta property="og:updated_time" content="2022-06-26 22:53:03.396716">
+        <meta property="og:updated_time" content="2022-06-28 05:53:38.746715">
         <meta property="og:image" content="static/images/share-webslides.jpg">
 
         <!-- TWITTER -->
@@ -381,7 +381,39 @@ jobs:
 				<div class='wrap fadeIn'>
 					<div class='content-center'>
 					<h2>Triggers</h2>
-					<p>This configuration determines when an action pipeline runs. Note that multiple pipelines can be run off a single trigger, and pipelines finishing can trigger other pipelines to start</p>
+					<p>This configuration determines when an action pipeline runs. Note that multiple pipelines can be run off a single trigger, and pipelines finishing can trigger other pipelines to start. After a name parameter you need to add an 'on'</p>
+					<pre><code class='language-yaml'>name: GH build for ezprez
+
+on:
+  ... # This is where you add your trigger
+</code></pre>
+
+					</div>
+				</div>
+			</section>
+
+			<section class='bg-black slide-center'>
+				<div class='wrap fadeIn'>
+					<div class='content-center'>
+					<h2>On push</h2>
+
+					</div>
+				</div>
+			</section>
+
+			<section class='bg-black slide-center'>
+				<div class='wrap fadeIn'>
+					<div class='content-center'>
+					<h2>On Workflow dispatch</h2>
+
+					</div>
+				</div>
+			</section>
+
+			<section class='bg-black slide-center'>
+				<div class='wrap fadeIn'>
+					<div class='content-center'>
+					<h2>On Schedule/Cron</h2>
 
 					</div>
 				</div>
@@ -391,26 +423,17 @@ jobs:
 				<div class='wrap fadeIn'>
 					<div class='content-center'>
 					<h2>Jobs</h2>
-					<p>Each job is essentially a set of steps with some associated state</p>
+					<p>Each job is essentially a set of steps with some associated state. Each job runs in it's own 'runner' with it's own 'virtual environment'(container)</p>
+					<pre><code class='language-yaml'>name: name of workflow
 
-					</div>
-				</div>
-			</section>
+on:
+  ... # This is where you add your trigger
 
-			<section class='bg-black slide-center'>
-				<div class='wrap fadeIn'>
-					<div class='content-center'>
-					<h2>Steps</h2>
-					<p>This is where actual commands are run. Note that state is typically persistant across steps in the same job.</p>
-
-					</div>
-				</div>
-			</section>
-
-			<section class='bg-black slide-center'>
-				<div class='wrap fadeIn'>
-					<div class='content-center'>
-					<h2>Using pre-built actions</h2>
+jobs:
+  job_name:
+    name: You can also specify a name here
+    ... # environment definition
+</code></pre>
 
 					</div>
 				</div>
@@ -429,8 +452,72 @@ jobs:
 			<section class='bg-black slide-center'>
 				<div class='wrap fadeIn'>
 					<div class='content-center'>
+					<h2>runs-on</h2>
+					<p>This defines what OS the workflow runs on</p>
+					<pre><code class='language-yaml'>name: name of workflow
+
+on:
+  ... # This is where you add your trigger
+
+jobs:
+  job_name:
+    name: You can also specify a name here
+    runs-on: ubuntu-latest # can also be a matrix you iterate over
+</code></pre>
+
+					</div>
+				</div>
+			</section>
+
+			<section class='bg-black slide-center'>
+				<div class='wrap fadeIn'>
+					<div class='content-center'>
 					<h2>Strategy</h2>
-					<p>matrix</p>
+					<p>Used to create arrays that are itterated over to run a job multiple times</p>
+					<pre><code class='language-yaml'>name: name of workflow
+
+on:
+  ... # This is where you add your trigger
+
+jobs:
+  job_name:
+    name: You can also specify a name here
+    runs-on: ${{ matrix.os }} # Would run this with ubuntu-latest first, then windows-latest, then macos-latest
+    strategy:
+      matrix:
+        python_version: ['3.7', '3.8', '3.9', '3.10'] # Can use this later on
+        os: [ubuntu-latest, windows-latest, macOS-latest]
+</code></pre>
+
+					</div>
+				</div>
+			</section>
+
+			<section class='bg-black slide-center'>
+				<div class='wrap fadeIn'>
+					<div class='content-center'>
+					<h2>Steps</h2>
+					<p>This is where actual commands are run. Note that state is typically persistant across steps in the same job. Note you can use other people's actions by passing the repo name</p>
+					<pre><code class='language-yaml'>name: name of workflow
+
+on:
+  ... # This is where you add your trigger
+
+jobs:
+  job_name:
+    ... # your job config
+
+    steps:
+    - uses: actions/checkout@v2 # minimal example
+    - name: Set up Python ${{ matrix.python_version }} # Using a more complex pre-built example
+      uses: actions/setup-python@v1 # https://github.com/actions/setup-python
+      with:
+        python-version: ${{ matrix.python_version }}
+    - name: Install dependencies # Example of running raw bash commands
+      run: |
+        pip install .
+        pip install pytest
+</code></pre>
 
 					</div>
 				</div>
@@ -440,7 +527,7 @@ jobs:
 				<div class='wrap fadeIn'>
 					<div class='content-center'>
 					<h2>Using with</h2>
-					<p>with can be used to define settings for each step in a job. There are some standard one's we will cover but keep in mind custom actions often have custom settings you can use alongside the with section</p>
+					<p>With can be used to define settings for each step in a job. There are some standard one's we will cover but keep in mind custom actions often have custom settings you can use alongside the with section</p>
 
 					</div>
 				</div>
