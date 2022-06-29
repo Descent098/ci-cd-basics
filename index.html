@@ -27,7 +27,7 @@
         <meta property="og:type" content="article">
         <meta property="og:title" content="CI/CD Basics"> 
         <meta property="og:description" content="The basics of CI/CD pipelines, github actions and github pages">
-        <meta property="og:updated_time" content="2022-06-28 05:53:38.746715">
+        <meta property="og:updated_time" content="2022-06-29 04:48:12.855243">
         <meta property="og:image" content="static/images/share-webslides.jpg">
 
         <!-- TWITTER -->
@@ -60,6 +60,116 @@
                         <p class='text-intro'>The basics of CI/CD pipelines, github actions and github pages</p>
                     </div>
             </section>
+
+			<section class='bg-green slide-center'>
+				<div class='wrap fadeIn'>
+					<div class='content-center'>
+					<h2>Before we get started</h2>
+					<p>You will need to be comfortable with terminal commands, so here is a quick refresher before we get started</p>
+
+					</div>
+				</div>
+			</section>
+
+			<section class='bg-green slide-center'>
+				<div class='wrap fadeIn'>
+					<div class='content-center'>
+					<h2>Know your OS's</h2>
+					<p>*nix: unix like systems such as macos & linux (typically use bash) vs windows (uses batch/Powershell)</p>
+
+					</div>
+				</div>
+			</section>
+
+			<section class='bg-gray slide-center'>
+				<div class='wrap fadeIn'>
+					<div class='content-center'>
+					<h2>cd</h2>
+
+					</div>
+				</div>
+			</section>
+
+			<section class='bg-gray slide-center'>
+				<div class='wrap fadeIn'>
+					<div class='content-center'>
+					<h2>mv/move</h2>
+
+					</div>
+				</div>
+			</section>
+
+			<section class='bg-gray slide-center'>
+				<div class='wrap fadeIn'>
+					<div class='content-center'>
+					<h2>mkdir</h2>
+
+					</div>
+				</div>
+			</section>
+
+			<section class='bg-gray slide-center'>
+				<div class='wrap fadeIn'>
+					<div class='content-center'>
+					<h2>rm/del</h2>
+
+					</div>
+				</div>
+			</section>
+
+			<section class='bg-gray slide-center'>
+				<div class='wrap fadeIn'>
+					<div class='content-center'>
+					<h2>cat/type</h2>
+
+					</div>
+				</div>
+			</section>
+
+			<section class='bg-gray slide-center'>
+				<div class='wrap fadeIn'>
+					<div class='content-center'>
+					<h2>cp/copy</h2>
+
+					</div>
+				</div>
+			</section>
+
+			<section class='bg-gray slide-center'>
+				<div class='wrap fadeIn'>
+					<div class='content-center'>
+					<h2>ls/dir</h2>
+
+					</div>
+				</div>
+			</section>
+
+			<section class='bg-gray slide-center'>
+				<div class='wrap fadeIn'>
+					<div class='content-center'>
+					<h2>zip/(tar or Compress-Archive)</h2>
+
+					</div>
+				</div>
+			</section>
+
+			<section class='bg-gray slide-center'>
+				<div class='wrap fadeIn'>
+					<div class='content-center'>
+					<h2>Piping & Chaining</h2>
+
+					</div>
+				</div>
+			</section>
+
+			<section class='bg-gray slide-center'>
+				<div class='wrap fadeIn'>
+					<div class='content-center'>
+					<h2>grep/findstr</h2>
+
+					</div>
+				</div>
+			</section>
 
 			<section class='bg-gray slide-center'>
 				<div class='wrap fadeIn'>
@@ -395,7 +505,13 @@ on:
 			<section class='bg-black slide-center'>
 				<div class='wrap fadeIn'>
 					<div class='content-center'>
-					<h2>On push</h2>
+					<h2>On push (all branches)</h2>
+					<pre><code class='language-yaml'>name: GH build for ezprez
+
+on:
+  [push] # all branches
+
+</code></pre>
 
 					</div>
 				</div>
@@ -404,7 +520,49 @@ on:
 			<section class='bg-black slide-center'>
 				<div class='wrap fadeIn'>
 					<div class='content-center'>
-					<h2>On Workflow dispatch</h2>
+					<h2>On push (specific branches)</h2>
+					<pre><code class='language-yaml'>name: GH build for ezprez
+
+on:
+  push:
+    branches: # Only rub on a push to master or main
+      - master
+      - main
+
+</code></pre>
+
+					</div>
+				</div>
+			</section>
+
+			<section class='bg-black slide-center'>
+				<div class='wrap fadeIn'>
+					<div class='content-center'>
+					<h2>On Workflow dispatch (No Inputs)</h2>
+					<pre><code class='language-yaml'>name: GH build for ezprez
+
+on:
+  workflow_dispatch # Manually start the pipeline
+</code></pre>
+
+					</div>
+				</div>
+			</section>
+
+			<section class='bg-black slide-center'>
+				<div class='wrap fadeIn'>
+					<div class='content-center'>
+					<h2>On Workflow dispatch (Inputs)</h2>
+					<pre><code class='language-yaml'>name: GH build for ezprez
+
+on:
+  workflow_dispatch: # Manually start the pipeline
+    inputs:
+        doc_system: # Can access value ${{ github.event.inputs.doc_system }}
+          description: Either pdoc, or mkdocs # Description shows under field
+          default: pdoc # Provide a default
+          required: true # Make field required or not
+</code></pre>
 
 					</div>
 				</div>
@@ -414,6 +572,15 @@ on:
 				<div class='wrap fadeIn'>
 					<div class='content-center'>
 					<h2>On Schedule/Cron</h2>
+
+					<a href=https://crontab.cronhub.io target='_blank' rel='external' style='color:#4dd;'>Online editor for crontab format</a>
+					<pre><code class='language-yaml'>name: GH build for ezprez
+
+on:
+  schedule:
+    # Run at 5:05 pm on mondays and wednesdays
+    - cron: '5 17 * * 1,3'
+</code></pre>
 
 					</div>
 				</div>
