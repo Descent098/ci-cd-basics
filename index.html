@@ -27,7 +27,7 @@
         <meta property="og:type" content="article">
         <meta property="og:title" content="CI/CD Basics"> 
         <meta property="og:description" content="The basics of CI/CD pipelines, github actions and github pages">
-        <meta property="og:updated_time" content="2022-06-29 04:48:12.855243">
+        <meta property="og:updated_time" content="2022-06-29 05:50:10.729140">
         <meta property="og:image" content="static/images/share-webslides.jpg">
 
         <!-- TWITTER -->
@@ -60,116 +60,6 @@
                         <p class='text-intro'>The basics of CI/CD pipelines, github actions and github pages</p>
                     </div>
             </section>
-
-			<section class='bg-green slide-center'>
-				<div class='wrap fadeIn'>
-					<div class='content-center'>
-					<h2>Before we get started</h2>
-					<p>You will need to be comfortable with terminal commands, so here is a quick refresher before we get started</p>
-
-					</div>
-				</div>
-			</section>
-
-			<section class='bg-green slide-center'>
-				<div class='wrap fadeIn'>
-					<div class='content-center'>
-					<h2>Know your OS's</h2>
-					<p>*nix: unix like systems such as macos & linux (typically use bash) vs windows (uses batch/Powershell)</p>
-
-					</div>
-				</div>
-			</section>
-
-			<section class='bg-gray slide-center'>
-				<div class='wrap fadeIn'>
-					<div class='content-center'>
-					<h2>cd</h2>
-
-					</div>
-				</div>
-			</section>
-
-			<section class='bg-gray slide-center'>
-				<div class='wrap fadeIn'>
-					<div class='content-center'>
-					<h2>mv/move</h2>
-
-					</div>
-				</div>
-			</section>
-
-			<section class='bg-gray slide-center'>
-				<div class='wrap fadeIn'>
-					<div class='content-center'>
-					<h2>mkdir</h2>
-
-					</div>
-				</div>
-			</section>
-
-			<section class='bg-gray slide-center'>
-				<div class='wrap fadeIn'>
-					<div class='content-center'>
-					<h2>rm/del</h2>
-
-					</div>
-				</div>
-			</section>
-
-			<section class='bg-gray slide-center'>
-				<div class='wrap fadeIn'>
-					<div class='content-center'>
-					<h2>cat/type</h2>
-
-					</div>
-				</div>
-			</section>
-
-			<section class='bg-gray slide-center'>
-				<div class='wrap fadeIn'>
-					<div class='content-center'>
-					<h2>cp/copy</h2>
-
-					</div>
-				</div>
-			</section>
-
-			<section class='bg-gray slide-center'>
-				<div class='wrap fadeIn'>
-					<div class='content-center'>
-					<h2>ls/dir</h2>
-
-					</div>
-				</div>
-			</section>
-
-			<section class='bg-gray slide-center'>
-				<div class='wrap fadeIn'>
-					<div class='content-center'>
-					<h2>zip/(tar or Compress-Archive)</h2>
-
-					</div>
-				</div>
-			</section>
-
-			<section class='bg-gray slide-center'>
-				<div class='wrap fadeIn'>
-					<div class='content-center'>
-					<h2>Piping & Chaining</h2>
-
-					</div>
-				</div>
-			</section>
-
-			<section class='bg-gray slide-center'>
-				<div class='wrap fadeIn'>
-					<div class='content-center'>
-					<h2>grep/findstr</h2>
-
-					</div>
-				</div>
-			</section>
 
 			<section class='bg-gray slide-center'>
 				<div class='wrap fadeIn'>
@@ -295,6 +185,7 @@
 				<div class='wrap fadeIn'>
 					<div class='content-center'>
 					<h2>Some example systems</h2>
+					<p>Every system is a little different. Don't worry about understanding these fully, we will cover one system in depth later these are just here to show other approaches</p>
 
 					</div>
 				</div>
@@ -694,7 +585,7 @@ jobs:
 				<div class='wrap fadeIn'>
 					<div class='content-center'>
 					<h2>Using with</h2>
-					<p>With can be used to define settings for each step in a job. There are some standard one's we will cover but keep in mind custom actions often have custom settings you can use alongside the with section</p>
+					<p>With can be used to define settings for each step in a job. There are some standard one's we will cover but keep in mind custom actions often have custom settings you can use alongside the with section. It is essentially where you can stick any configuration for a step you need</p>
 
 					</div>
 				</div>
@@ -703,8 +594,30 @@ jobs:
 			<section class='bg-black slide-center'>
 				<div class='wrap fadeIn'>
 					<div class='content-center'>
+					<h2>Secrets</h2>
+					<p>In github you can set a secret, which is a key-value pair that is kept completely secret (like a password). Be aware once set you can only modify or delete, you cannot read the value again</p>
+<img src='./static/images/secrets.png' alt='secrets' >
+					</div>
+				</div>
+			</section>
+
+			<section class='bg-black slide-center'>
+				<div class='wrap fadeIn'>
+					<div class='content-center'>
 					<h2>With options: token</h2>
-					<p>Tokens are used to authenticate an action and are what allows the action access to make changes or even just access content that is locked behind a password</p>
+					<p>Tokens are used to authenticate an action and are what allows the action access to make changes or even just access content that is locked behind a password/github account. They use different formats, but here is an example</p>
+					<pre><code class='language-yaml'>name: Publish Site
+on:
+  ...
+jobs:
+  build-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Publish Site
+        uses: chabad360/hugo-gh-pages@master
+        with:
+          githubToken: ${{ secrets.PERSONAL_TOKEN }} # In this case this is where you set a personal access token to your account
+</code></pre>
 
 					</div>
 				</div>
@@ -714,7 +627,59 @@ jobs:
 				<div class='wrap fadeIn'>
 					<div class='content-center'>
 					<h2>With options: artifacts</h2>
+					<pre><code class='language-yaml'>name: Create theme release # Taken from https://github.com/QU-UP/ezcv-themes/blob/main/.github/workflows/release.yml
+on:
+  workflow_dispatch:
+    inputs:
+      version_number:
+        description: The version number to release
+        default: "0.1.0"
+        required: true
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout repo
+      uses: actions/checkout@v2
 
+    - name: Create zip files
+      ... # creates a bunch of zip files
+    - name: Create release draft
+      uses: ncipollo/release-action@v1
+      with:
+        artifacts: "*.zip" # Include zip files in releases draft
+        tag: ${{ github.event.inputs.version_number }}
+        draft: true
+        token: ${{ secrets.GITHUB_TOKEN }}
+</code></pre>
+
+					</div>
+				</div>
+			</section>
+
+			<section class='bg-black slide-center'>
+				<div class='wrap fadeIn'>
+					<div class='content-center'>
+					<h2>What does this look like?</h2>
+<img src='./static/images/actions-status.png' alt='actions-status' >
+					</div>
+				</div>
+			</section>
+
+			<section class='bg-black slide-center'>
+				<div class='wrap fadeIn'>
+					<div class='content-center'>
+					<h2>What does this look like?</h2>
+<img src='./static/images/actions-overview.png' alt='actions-overview' >
+					</div>
+				</div>
+			</section>
+
+			<section class='bg-black slide-center'>
+				<div class='wrap fadeIn'>
+					<div class='content-center'>
+					<h2>What does this look like?</h2>
+<img src='./static/images/workflow-run-summary.png' alt='workflow-run-summary' >
 					</div>
 				</div>
 			</section>
@@ -723,7 +688,38 @@ jobs:
 				<div class='wrap fadeIn'>
 					<div class='content-center'>
 					<h2>Github Pages</h2>
+					<p>Github pages is a host for static site files. Imagine a google drive/dropbox/onedrive but for html files so that people can access the files on the web. It also provides a full http server as well</p>
 
+					</div>
+				</div>
+			</section>
+
+			<section class='bg-black-blue slide-center'>
+				<div class='wrap fadeIn'>
+					<div class='content-center'>
+					<h2>Github Pages setup</h2>
+					<p>You can either have your html files in your regular source or on a gh-pages branch. You need an index.html file for either</p>
+
+					</div>
+				</div>
+			</section>
+
+			<section class='bg-black-blue slide-center'>
+				<div class='wrap fadeIn'>
+					<div class='content-center'>
+					<h2>Github Pages setup</h2>
+					<p>Once you have the content where you want it, you can configure the settings for github pages from the repository (by default <username>.github.io is the domain used, and should be the repository name)</p>
+<img src='./static/images/pages-setup.png' alt='pages-setup' >
+					</div>
+				</div>
+			</section>
+
+			<section class='bg-black-blue slide-center'>
+				<div class='wrap fadeIn'>
+					<div class='content-center'>
+					<h2>Github Pages deployment</h2>
+					<p>Once you have finished the configuration a github action will run to actually deploy the files to github's servers</p>
+<img src='./static/images/gh-pages-deploy.png' alt='gh-pages-deploy' >
 					</div>
 				</div>
 			</section>
