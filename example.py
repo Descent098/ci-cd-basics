@@ -155,6 +155,7 @@ on:
           required: true # Make field required or not
 """
 Slide("On Workflow dispatch (Inputs)",Code("yaml", workflow_dispatch_input_example),background="black") # TODO: https://github.com/Descent098/ezcv/blob/master/.github/workflows/docs.yml#L3-L9
+Slide("On Workflow dispatch (Inputs)",Image("workflow-dispatch", "workflow-dispatch.png"),background="black") # TODO: https://github.com/Descent098/ezcv/blob/master/.github/workflows/docs.yml#L3-L9
 
 schedule_dispatch_example= r"""name: GH build for ezprez
 
