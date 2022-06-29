@@ -1,20 +1,6 @@
 from ezprez.core import *
 from ezprez.components import *
 
-# Cli/terminal info
-Slide("Before we get started", "You will need to be comfortable with terminal commands, so here is a quick refresher before we get started", background="green")
-Slide("Know your OS's", "*nix: unix like systems such as macos & linux (typically use bash) vs windows (uses batch/Powershell)", background="green")
-Slide("cd")
-Slide("mv/move")
-Slide("mkdir")
-Slide("rm/del") # Remember to note rm -rf for a folder
-Slide("cat/type")
-Slide("cp/copy")
-Slide("ls/dir")
-Slide("zip/(tar or Compress-Archive)")
-Slide("Piping & Chaining")
-Slide("grep/findstr") # `type example.py | findstr ezprez`
-
 # CI/CD Pipelines
 Slide("What is Continuous Integration/Continuous Deployment?", "Essentially it is a method for defining automated virtual computing processes. In laymens terms it typically means writing a configuration file or script that will spin up a 'virtual computer' (though sometimes it will run on the host computer) and run through a series of defined tasks.",background="gray")
 Slide("What is CI/CD Used for?", "Any task that you might want a 'virtual computer' to run it on for example", ["Testing", "Building a distribution", "Automated updating", "etc."], background="gray")
@@ -45,7 +31,7 @@ jenkins_example = """pipeline {
         }
     }
 }"""
-Slide("Some example systems", background="gray")
+Slide("Some example systems", "Every system is a little different. Don't worry about understanding these fully, we will cover one system in depth later these are just here to show other approaches", background="gray")
 Slide("Jenkins", "Example jenkinsfile (printing Hello world! at cli)", Code("jenkins", jenkins_example ), Link("Site", "https://www.jenkins.io/", color="#ff0000"), background="gray")
 
 ansible_example ="""---
@@ -248,14 +234,62 @@ jobs:
 """
 Slide("Steps","This is where actual commands are run. Note that state is typically persistant across steps in the same job. Note you can use other people's actions by passing the repo name", Code("yaml", steps_template),background="black") # Each bullet point is a task that runs steps defined, or runs action defined
 
+Slide("Using with", "With can be used to define settings for each step in a job. There are some standard one's we will cover but keep in mind custom actions often have custom settings you can use alongside the with section. It is essentially where you can stick any configuration for a step you need",background="black") 
 
-Slide("Using with", "With can be used to define settings for each step in a job. There are some standard one's we will cover but keep in mind custom actions often have custom settings you can use alongside the with section",background="black") 
-Slide("With options: token", "Tokens are used to authenticate an action and are what allows the action access to make changes or even just access content that is locked behind a password",background="black")  
-Slide("With options: artifacts", background="black")  
+token_example = r"""name: Publish Site
+on:
+  ...
+jobs:
+  build-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Publish Site
+        uses: chabad360/hugo-gh-pages@master
+        with:
+          githubToken: ${{ secrets.PERSONAL_TOKEN }} # In this case this is where you set a personal access token to your account
+"""
 
+Slide("Secrets", "In github you can set a secret, which is a key-value pair that is kept completely secret (like a password). Be aware once set you can only modify or delete, you cannot read the value again", Image("secrets", "secrets.png"),background="black")
+
+Slide("With options: token", "Tokens are used to authenticate an action and are what allows the action access to make changes or even just access content that is locked behind a password/github account. They use different formats, but here is an example", Code("yaml", token_example),background="black")  
+
+artifacts_examples = r"""name: Create theme release # Taken from https://github.com/QU-UP/ezcv-themes/blob/main/.github/workflows/release.yml
+on:
+  workflow_dispatch:
+    inputs:
+      version_number:
+        description: The version number to release
+        default: "0.1.0"
+        required: true
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout repo
+      uses: actions/checkout@v2
+
+    - name: Create zip files
+      ... # creates a bunch of zip files
+    - name: Create release draft
+      uses: ncipollo/release-action@v1
+      with:
+        artifacts: "*.zip" # Include zip files in releases draft
+        tag: ${{ github.event.inputs.version_number }}
+        draft: true
+        token: ${{ secrets.GITHUB_TOKEN }}
+"""
+Slide("With options: artifacts", Code("yaml", artifacts_examples), background="black")
+
+### Github actions UI
+Slide("What does this look like?", Image("actions-status", "actions-status.png"), background="black")
+Slide("What does this look like?", Image("actions-overview", "actions-overview.png"), background="black")
+Slide("What does this look like?", Image("workflow-run-summary", "workflow-run-summary.png"), background="black")
 
 # Github Pages
-Slide("Github Pages", background="black-blue")
+Slide("Github Pages", "Github pages is a host for static site files. Imagine a google drive/dropbox/onedrive but for html files so that people can access the files on the web. It also provides a full http server as well",background="black-blue")
+Slide("Github Pages setup", "You can either have your html files in your regular source or on a gh-pages branch. You need an index.html file for either",background="black-blue")
+Slide("Github Pages setup", "Once you have the content where you want it, you can configure the settings for github pages from the repository (by default <username>.github.io is the domain used, and should be the repository name)", Image("pages-setup","pages-setup.png"), background="black-blue")
+Slide("Github Pages deployment", "Once you have finished the configuration a github action will run to actually deploy the files to github's servers", Image("gh-pages-deploy","gh-pages-deploy.png"), background="black-blue")
 
 # Setup the presentation
 presentation_title = "CI/CD Basics"
