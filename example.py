@@ -1,6 +1,20 @@
 from ezprez.core import *
 from ezprez.components import *
 
+# Cli/terminal info
+Slide("Before we get started", "You will need to be comfortable with terminal commands, so here is a quick refresher before we get started", background="green")
+Slide("Know your OS's", "*nix: unix like systems such as macos & linux (typically use bash) vs windows (uses batch/Powershell)", background="green")
+Slide("cd")
+Slide("mv/move")
+Slide("mkdir")
+Slide("rm/del") # Remember to note rm -rf for a folder
+Slide("cat/type")
+Slide("cp/copy")
+Slide("ls/dir")
+Slide("zip/(tar or Compress-Archive)")
+Slide("Piping & Chaining")
+Slide("grep/findstr") # `type example.py | findstr ezprez`
+
 # CI/CD Pipelines
 Slide("What is Continuous Integration/Continuous Deployment?", "Essentially it is a method for defining automated virtual computing processes. In laymens terms it typically means writing a configuration file or script that will spin up a 'virtual computer' (though sometimes it will run on the host computer) and run through a series of defined tasks.",background="gray")
 Slide("What is CI/CD Used for?", "Any task that you might want a 'virtual computer' to run it on for example", ["Testing", "Building a distribution", "Automated updating", "etc."], background="gray")
@@ -18,6 +32,7 @@ Slide("Step 1: Clone the site so we have the files", "First we need to clone the
 Slide("Step 2: We need to install hugo", "This means either installing go and installing hugo that way, or downloading a binary", background="gray")
 Slide("Step 3: Build the files", "Need to run the hugo command over the files we downloaded", Code("bash", "hugo -d"), background="gray")
 Slide("Step 4: Deploy the files", "Find a way to deploy those files so other people can access them (will cover this in detail tomorrow)", background="gray")
+
 
 ## Example systems
 jenkins_example = """pipeline {
@@ -113,9 +128,59 @@ on:
 
 Slide("Triggers", "This configuration determines when an action pipeline runs. Note that multiple pipelines can be run off a single trigger, and pipelines finishing can trigger other pipelines to start. After a name parameter you need to add an 'on'", Code("yaml", trigger_workflow), background="black") # On-dispatch, on-push, cron, on-event (release etc.) etc. include examples like ignite site or sws or ezcv themes
 
-Slide("On push",background="black") # TODO: https://github.com/Descent098/sdu/blob/master/.github/workflows/test-suite.yml#L3 and https://github.com/Descent098/ahd/blob/master/.github/workflows/testing.yml#L3-L6
-Slide("On Workflow dispatch",background="black") # TODO: https://github.com/Descent098/ezcv/blob/master/.github/workflows/docs.yml#L3-L9
-Slide("On Schedule/Cron",background="black") # TODO: https://github.com/Descent098/ahd/blob/master/.github/workflows/testing.yml#L7-L9
+
+
+onpush_example = """name: GH build for ezprez
+
+on:
+  [push] # all branches
+
+"""
+
+Slide("On push (all branches)", Code("yaml", onpush_example), background="black") 
+
+onpush_specific_example = """name: GH build for ezprez
+
+on:
+  push:
+    branches: # Only rub on a push to master or main
+      - master
+      - main
+
+"""
+
+Slide("On push (specific branches)", Code("yaml", onpush_specific_example), background="black") 
+
+workflow_dispatch_example = """name: GH build for ezprez
+
+on:
+  workflow_dispatch # Manually start the pipeline
+"""
+Slide("On Workflow dispatch (No Inputs)",Code("yaml", workflow_dispatch_example),background="black") # TODO: https://github.com/Descent098/ezcv/blob/master/.github/workflows/docs.yml#L3-L9
+
+workflow_dispatch_input_example = r"""name: GH build for ezprez
+
+on:
+  workflow_dispatch: # Manually start the pipeline
+    inputs:
+        doc_system: # Can access value ${{ github.event.inputs.doc_system }}
+          description: Either pdoc, or mkdocs # Description shows under field
+          default: pdoc # Provide a default
+          required: true # Make field required or not
+"""
+Slide("On Workflow dispatch (Inputs)",Code("yaml", workflow_dispatch_input_example),background="black") # TODO: https://github.com/Descent098/ezcv/blob/master/.github/workflows/docs.yml#L3-L9
+
+schedule_dispatch_example= r"""name: GH build for ezprez
+
+on:
+  schedule:
+    # Run at 5:05 pm on mondays and wednesdays
+    - cron: '5 17 * * 1,3'
+"""
+
+
+
+Slide("On Schedule/Cron", Link("Online editor for crontab format", "https://crontab.cronhub.io"),Code("yaml", schedule_dispatch_example),background="black")
 
 ## Jobs
 jobs_template = """name: name of workflow
